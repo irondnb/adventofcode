@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-INPUT_PATH = '/Users/irondnb/RubymineProjects/adventpuzzles/2/input.txt'.freeze
-content = File.read(INPUT_PATH).split("\n")
+content = File.read('./input.txt').split("\n")
 
 class PositionCounter
   FORWARD = 'forward'

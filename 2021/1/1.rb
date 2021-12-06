@@ -8,8 +8,7 @@ def count_increased(collection)
   counter
 end
 
-INPUT_PATH = '/Users/irondnb/RubymineProjects/adventpuzzles/1/input.txt'.freeze
-content = File.read(INPUT_PATH).split.map(&:to_i)
+content = File.read('./input.txt').split.map(&:to_i)
 
 # part one
 
