@@ -1,62 +1,35 @@
-# SLOW
-
-class Point
-  attr_reader :x, :y
-
-  def initialize(x, y)
-    @x = x
-    @y = y
-  end
-
-  def ==(other_point)
-    other_point.x == x && other_point.y == y
-  end
-
-  alias eql? ==
-end
-
 class Line
-  attr_reader :start_point, :end_point, :points
+  attr_reader :x1, :x2, :y1, :y2, :points
 
   def initialize(start_point, end_point)
-    @start_point = Point.new(*start_point)
-    @end_point = Point.new(*end_point)
-    @points = init_points
+    @x1, @y1 = start_point
+    @x2, @y2 = end_point
+    @points = draw_points
   end
 
-  def find_overlaps(other_line)
-    other_line.points.map do |other_point|
-      points.select { |point| point == other_point }
-    end.flatten
+  def stright?
+    x1 == x2 || y1 == y2
   end
 
-  def init_points
-    (@start_point.x..@end_point.x).map do |x|
-      (@start_point.y..@end_point.y).map do |y|
-        Point.new(x, y)
-      end
-    end.flatten
-  end
-end
-puts 'Initializing...'
-content = File.read('./input.txt').split("\n")
-lines_input = content.map { |line| line.split(' -> ') }.map { |line| line.map { |l| l.split(',').map(&:to_i) } }
-puts 'Drawing lines..'
-lines = lines_input.map { |input| Line.new(*input) }
-lines_count = lines.count
+  private
 
-result = {}
-lines_count.times do |i|
-  puts "Process #{i}/#{lines_count}"
-  line = lines.pop
-  lines.map do |l|
-    print '.'
-    l.find_overlaps(line).each do |point|
-      result[point] ||= 0
-      result[point] += 1
+  def draw_points
+    x_p = x1 > x2 ? x1.downto(x2) : x1.upto(x2)
+    y_p = y1 > y2 ? y1.downto(y2) : y1.upto(y2)
+
+    if stright?
+      [*x_p].product([*y_p])
+    else
+      [*x_p].zip([*y_p])
     end
   end
 end
 
-pp result
-pp result.select { |k, v| v > 1 }.count
+puts 'Initializing...'
+content = File.read('./input.txt').split("\n")
+lines_input = content.map { |line| line.split(' -> ') }.map { |line| line.map { |l| l.split(',').map(&:to_i) } }
+puts 'Drawing lines..'
+all_lines = lines_input.map { |input| Line.new(*input) }
+stright_lines = all_lines.select(&:stright?)
+puts stright_lines.flat_map(&:points).tally.values.count { |x| x > 1 }
+puts all_lines.flat_map(&:points).tally.values.count { |x| x > 1 }
